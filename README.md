@@ -130,3 +130,18 @@ Design and implement an information system that supports:
 - Document all major decisions
 
 Good luck with your implementation!
+
+# Instructions on Running the program:
+- docker compose up --build
+- enter to localhost:8080 to enter the API's documentation webpage
+- enter to localhost:3000 to enter the AutoPartsPro webpage
+
+# Instructions on developing:
+- use a venv for working with the backend:
+   - python -m venv venv
+- activate the venv:
+   - venv\Scripts\Activate.ps1
+- install dependencies:
+   - pip install -r requirements.txt
+- when done:
+   - deactivate
