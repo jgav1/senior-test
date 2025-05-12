@@ -2,8 +2,8 @@ from sqlmodel import Session, SQLModel, create_engine
 
 from api.config import settings
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(settings.DATABASE_URI, echo=True, connect_args=connect_args)
+#connect_args = {"check_same_thread": False}
+engine = create_engine(settings.DATABASE_URI, echo=True)
 
 
 def create_db_and_tables():
