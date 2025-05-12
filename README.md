@@ -135,6 +135,7 @@ Good luck with your implementation!
 - docker compose up --build
 - enter to localhost:8000 to enter the API's documentation webpage
 - enter to localhost:3000 to enter the AutoPartsPro webpage
+- enter to localhost:5050 to enter pgadmin. 
 
 # Instructions on developing:
 - use a venv for working with the backend:
