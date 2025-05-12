@@ -10,13 +10,36 @@ from api.public.customers.exceptions import(
     CustomerAlreadyExists
 
 )
+from uuid import UUID
 
 logger = logger_config(__name__)
 
-def crud_get_customers():
-    return "Here are the mock customers"
 
-def create_customer_crud(customer: CustomerCreate, db: Session = Depends(get_session)):
+def read_customers(db: Session = Depends(get_session)):
+    try:
+        statement = select(Customer)
+        results = db.exec(statement)
+        customers = results.all()
+        if not customers:
+            logger.error("No customers found.")
+            return {"error": "No customers found"}
+        return customers
+    except Exception as e:
+        logger.error(f"Error fetching customers: {e}")
+        return {"error": str(e)}
+    
+def read_customer(customer_id: UUID, db: Session = Depends(get_session)):
+    try:
+        if customer_id:
+            customer = db.get(Customer, customer_id)
+            if not customer:
+                logger.error(f"Customer with id {customer_id} not found.")
+                return {"error": "Customer not found"}
+            return customer
+    except Exception as e:
+        logger.error(f"Error fetching customers: {e}")
+
+def post_customer(customer: CustomerCreate, db: Session = Depends(get_session)):
     try:
         customer_to_db = Customer(name=customer.name, last_name=customer.last_name, email=customer.email)
         db.add(customer_to_db)
