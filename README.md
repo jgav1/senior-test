@@ -133,15 +133,17 @@ Good luck with your implementation!
 
 # Instructions on Running the program:
 - docker compose up --build
-- enter to localhost:8080 to enter the API's documentation webpage
+- enter to localhost:8000 to enter the API's documentation webpage
 - enter to localhost:3000 to enter the AutoPartsPro webpage
 
 # Instructions on developing:
 - use a venv for working with the backend:
    - python -m venv venv
+- verify that the workspace was changed to the venv and that the python interpreter is the one of the venv otherwise in vscode execute:
+   - Python select interpreter -> venv python interpreter
 - activate the venv:
-   - venv\Scripts\Activate.ps1
+   - venv\Scripts\Activate
 - install dependencies:
-   - pip install -r requirements.txt
+   - pip install -r requirements-dev.txt
 - when done:
    - deactivate
