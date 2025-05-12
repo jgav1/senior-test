@@ -1,8 +1,9 @@
 from sqlmodel import Field, Relationship, SQLModel 
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 import uuid
+
 
 
 
@@ -25,7 +26,16 @@ class CustomerBase(SQLModel):
 
 class Customer(CustomerBase, table=True):
     id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
 
 class CustomerCreate(CustomerBase):
     pass
+
+class CustomerRead(CustomerBase):
+    id: uuid.UUID
+    name: str
+    last_name: str
+    email: str
+
    
