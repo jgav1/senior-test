@@ -5,6 +5,8 @@ from api.public.vehicle_types import api as vehicle_types
 from api.public.skus import api as sku
 from api.public.parts import api as parts
 from api.public.part_market_data import api as part_market_data
+from api.public.customer_orders import api as customer_orders
+from api.public.vehicle_parts_catalog import api as vehicle_parts_catalog
 #from api.auth import authent
 
 api = APIRouter()
@@ -51,7 +53,19 @@ api.include_router(
     #dependencies=[Depends(authent)],
 )
 
-
-
+api.include_router(
+    customer_orders.router,
+    prefix="/customer_orders",
+    tags=["Customer Orders"],
+    #dependencies=[Depends(authent)],
+)
+"""
+api.include_router(
+    vehicle_parts_catalog.router,
+    prefix="/vehicle_parts_catalog",
+    tags=["Vehicle Parts Catalog"],
+    #dependencies=[Depends(authent)],
+)
+"""
 
 
