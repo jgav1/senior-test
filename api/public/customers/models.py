@@ -3,15 +3,13 @@ from typing import Optional, List
 from datetime import datetime, timezone
 from enum import Enum
 import uuid
-
-
-
+from pydantic import EmailStr
 
 
 class CustomerBase(SQLModel):
     name: str = Field(max_length=100)
     last_name: str = Field(max_length=100)
-    email: str = Field(max_length=100, unique=True)
+    email: EmailStr = Field(max_length=100, unique=True)
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -36,11 +34,11 @@ class CustomerRead(CustomerBase):
     id: uuid.UUID
     name: str
     last_name: str
-    email: str
+    email: EmailStr
 class CustomerUpdate(CustomerBase):
     name: Optional[str] = None
     last_name: Optional[str] = None
-    email: Optional[str] = None
+    email: Optional[EmailStr] = None
 
 
    
