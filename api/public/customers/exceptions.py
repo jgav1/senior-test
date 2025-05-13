@@ -6,3 +6,7 @@ class CustomerExeption(HTTPException):
 class CustomerAlreadyExists(CustomerExeption):
     def __init__(self, detail: str = "Customer already exists. failed to create."):
         super().__init__(status_code=500, detail="Customer already exists. failed to create.")
+
+class CustomerNotFound(CustomerExeption):
+    def __init__(self, detail: str = "Customer not found."):
+        super().__init__(status_code=404, detail="Customer not found.")

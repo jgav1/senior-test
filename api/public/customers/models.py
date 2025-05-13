@@ -37,5 +37,10 @@ class CustomerRead(CustomerBase):
     name: str
     last_name: str
     email: str
+class CustomerUpdate(CustomerBase):
+    name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[str] = None
+
 
    
