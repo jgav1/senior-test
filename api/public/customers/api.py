@@ -26,7 +26,7 @@ async def get_all_customers(db: Session = Depends(get_session)):
 async def get_customers(customer_id:UUID, db: Session = Depends(get_session)):
     return read_customer(customer_id=customer_id, db=db)
 
-@router.post("")
+@router.post("", response_model=CustomerRead)
 def create_customer(customer: CustomerCreate, db: Session = Depends(get_session)):
     return post_customer(customer=customer, db=db)
 

@@ -17,7 +17,7 @@ def read_customers(db: Session = Depends(get_session)):
         customers = results.all()
         if not customers:
             logger.error("No customers found.")
-            return {"error": "No customers found"}
+            return []
         return customers
     except Exception as e:
         logger.error(f"Error fetching customers: {e}")
@@ -29,7 +29,7 @@ def read_customer(customer_id: UUID, db: Session = Depends(get_session)):
             customer = db.get(Customer, customer_id)
             if not customer:
                 logger.error(f"Customer with id {customer_id} not found.")
-                return {"error": "Customer not found"}
+                return []
             return customer
     except Exception as e:
         logger.error(f"Error fetching customers: {e}")
@@ -51,10 +51,11 @@ def patch_customer(customer_id: UUID, customer: CustomerUpdate, db: Session = De
         db_customer = db.get(Customer, customer_id)
         if not db_customer:
             logger.error(f"Customer with id {customer_id} not found.")
-            return {"error": "Customer not found"}
+            return []
         customer_data = customer.model_dump(exclude_unset=True)
         for key, value in customer_data.items():
             setattr(db_customer, key, value)
+        db_customer.updated_at = datetime.now(timezone.utc)
         db.add(db_customer)
         db.commit()
         db.refresh(db_customer)
@@ -70,7 +71,7 @@ def delete_customer(customer_id: UUID, db: Session = Depends(get_session)):
         db_customer = db.get(Customer, customer_id)
         if not db_customer:
             logger.error(f"Customer with id {customer_id} not found.")
-            return {"error": "Customer not found"}
+            return []
         db.delete(db_customer)
         db.commit()
         logger.info(f"Customer {db_customer.id} deleted successfully.")
