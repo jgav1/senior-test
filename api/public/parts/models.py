@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime, timezone
 import uuid
 if TYPE_CHECKING:
