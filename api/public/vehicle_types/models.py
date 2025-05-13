@@ -1,10 +1,12 @@
+from typing import TYPE_CHECKING, Optional
 from sqlmodel import Field, Relationship, SQLModel
 from typing import Optional, List
 from datetime import datetime, timezone
 from enum import Enum
 import uuid
 from pydantic import field_validator
-
+if TYPE_CHECKING:
+    from api.public.vehicles.models import Vehicle
 
 
 
@@ -40,6 +42,8 @@ class VehicleType(VehicleTypeBase, table=True):
     id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
+    vehicles: List["Vehicle"] = Relationship(back_populates=None)  # one-way relationship
+
 
 class VehicleTypeCreate(VehicleTypeBase):
     pass
@@ -60,4 +64,4 @@ class VehicleTypeUpdate(VehicleTypeBase):
     
 
 
-   
+VehicleType.model_rebuild()
