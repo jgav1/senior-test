@@ -2,6 +2,7 @@ from typing import Type, TypeVar, Generic, List, Optional
 from sqlmodel import SQLModel, Session, select
 from fastapi import HTTPException
 from uuid import UUID
+from datetime import datetime, timezone
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)
@@ -34,6 +35,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         update_data = obj_in.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(db_obj, field, value)
+        if hasattr(db_obj, "updated_at"):
+            setattr(db_obj, "updated_at", datetime.now(timezone.utc))
         try:
             db.add(db_obj)
             db.commit()
