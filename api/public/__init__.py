@@ -1,10 +1,7 @@
 from fastapi import APIRouter, Depends
 from api.public.customers import api as customers
-
+from api.public.vehicles import api as vehicles
 #from api.auth import authent
-#from api.public.health import views as health
-#from api.public.hero import views as heroes
-#from api.public.team import views as teams
 
 api = APIRouter()
 
@@ -14,4 +11,12 @@ api.include_router(
     tags=["Customers"],
     #dependencies=[Depends(authent)],
 )
+
+api.include_router(
+    vehicles.router,
+    prefix="/vehicles",
+    tags=["Vehicles"],
+    #dependencies=[Depends(authent)],
+)
+
 
