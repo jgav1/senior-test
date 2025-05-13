@@ -3,9 +3,11 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime, timezone
 import uuid
+from api.public.vehicle_parts_catalog.models import VehiclePartsLink
 if TYPE_CHECKING:
     from api.public.skus.models import Sku
     from api.public.part_market_data.models import PartsMarketData
+    from api.public.vehicle_types.models import VehicleType
 
 class PartsBase(SQLModel):
     quantity: int = Field(nullable=False)
@@ -28,6 +30,7 @@ class Parts(PartsBase, table=True):
 
     sku: Optional["Sku"] = Relationship(back_populates=None)  # one-way relationship
     parts_market_data: Optional["PartsMarketData"] = Relationship(back_populates=None, cascade_delete=True)  # one-way relationship
+    vehicle_types: list["VehicleType"] = Relationship(back_populates="parts", link_model=VehiclePartsLink)  # many-to-many relationship
 
 class PartsCreate(PartsBase):
     sku_id: uuid.UUID

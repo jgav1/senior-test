@@ -5,8 +5,10 @@ from datetime import datetime, timezone
 from enum import Enum
 import uuid
 from pydantic import field_validator
+from api.public.vehicle_parts_catalog.models import VehiclePartsLink
 if TYPE_CHECKING:
     from api.public.vehicles.models import Vehicle
+    from api.public.parts.models import Parts
 
 
 
@@ -43,6 +45,7 @@ class VehicleType(VehicleTypeBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
     vehicles: List["Vehicle"] = Relationship(back_populates=None)  # one-way relationship
+    parts: List["Parts"] = Relationship(back_populates="vehicle_types", link_model=VehiclePartsLink)  # many-to-many relationship
 
 
 class VehicleTypeCreate(VehicleTypeBase):
