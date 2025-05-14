@@ -7,6 +7,7 @@ import uuid
 from pydantic import field_validator
 if TYPE_CHECKING:
     from api.public.parts.models import Parts
+    from api.public.inventory.models import Inventory
 
 class sizeEnum(str, Enum):
     xxs = "xxs"
@@ -45,6 +46,7 @@ class Sku(SkuBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
     parts: list["Parts"] = Relationship(back_populates=None, cascade_delete=True)  # one-way relationship
+    inventory: list["Inventory"] = Relationship(back_populates=None, cascade_delete=True)  # one-way relationship
 
 class SkuCreate(SkuBase):
     pass
