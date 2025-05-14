@@ -48,7 +48,7 @@ class WorkShopOrders(WorkShopOrdersBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
     customer_orders: Optional["CustomerOrder"] = Relationship(back_populates=None)  # one-way relationship
-    profit_loss: Optional["ProfitLoss"] = Relationship(back_populates=None, cascade_delete=True)  # one-way relationship
+    profit_loss: Optional["ProfitLoss"] = Relationship(back_populates="workshop_orders", cascade_delete=True)  # one-way relationship
     jobs: List["Jobs"] = Relationship(back_populates="workshop_orders", link_model=OrderJobs)  # one-way relationship
 
     

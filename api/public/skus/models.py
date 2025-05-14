@@ -5,9 +5,11 @@ from datetime import datetime, timezone
 from enum import Enum
 import uuid
 from pydantic import field_validator
+from api.public.job_parts.models import JobParts
 if TYPE_CHECKING:
     from api.public.parts.models import Parts
     from api.public.inventory.models import Inventory
+    from api.public.jobs.models import Jobs
 
 class sizeEnum(str, Enum):
     xxs = "xxs"
@@ -47,6 +49,7 @@ class Sku(SkuBase, table=True):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
     parts: list["Parts"] = Relationship(back_populates=None, cascade_delete=True)  # one-way relationship
     inventory: list["Inventory"] = Relationship(back_populates=None, cascade_delete=True)  # one-way relationship
+    jobs: list["Jobs"] = Relationship(back_populates="skus", link_model=JobParts)  # many-to-many relationship
 
 class SkuCreate(SkuBase):
     pass

@@ -5,9 +5,11 @@ from datetime import datetime, timezone
 from enum import Enum
 import uuid
 from api.public.order_jobs.models import OrderJobs
+from api.public.job_parts.models import JobParts
 from decimal import Decimal
 if TYPE_CHECKING:
     from api.public.workshop_orders.models import WorkShopOrders
+    from api.public.skus.models import Sku
 
 class jobTypes(str, Enum):
     directSale = "direct_sale"
@@ -40,6 +42,7 @@ class Jobs(JobsBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=True)
     #add jobparts
+    skus: List["Sku"] = Relationship(back_populates="jobs", link_model=JobParts)  # many-to-many relationship
     workshop_orders: List["WorkShopOrders"] = Relationship(back_populates="jobs", link_model=OrderJobs)  # one-way relationship
 
     """
