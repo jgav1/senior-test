@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { fetchSkus, createSku, deleteSku } from '@/lib/api'
 import SKUForm from '../components/SKUForm'
 import ListWithDelete from '../components/ListWithDelete'
+import HeaderWithActions from '../components/HeaderWithActions'
 
 export default function Parts() {
   const [skus, setSkus] = useState<any[]>([])
@@ -58,6 +59,18 @@ export default function Parts() {
     </div>
   )
 
+  const handleCreateClick = () => {
+    setShowForm(true)
+  }
+
+  const handleCancelClick = () => {
+    setShowForm(false)
+  }
+
+  const handleDeleteModeToggle = () => {
+    setDeleteMode(!deleteMode)
+  }
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Parts</h1>
@@ -71,36 +84,21 @@ export default function Parts() {
 
       {tab === 'skus' && (
         <div className="bg-white p-6 rounded-2xl shadow">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">SKUs</h2>
-            {!showForm ? (
-              <button
-                onClick={() => setShowForm(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                Create SKU
-              </button>
-            ) : (
-              <button
-                onClick={() => setShowForm(false)}
-                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-              >
-                Cancel
-              </button>
-            )}
-            <button
-              onClick={() => setDeleteMode(!deleteMode)}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-            >
-              {deleteMode ? 'Cancel Delete' : 'Delete SKU'}
-            </button>
-          </div>
+          <HeaderWithActions
+            title="SKUs"
+            onCreateClick={handleCreateClick}
+            onCancelClick={handleCancelClick}
+            deleteMode={deleteMode}
+            onDeleteModeToggle={handleDeleteModeToggle}
+            createButtonLabel="Create SKU"
+            deleteButtonLabel="Delete SKU"
+          />
 
           {showForm && (
             <SKUForm 
               onSubmit={handleSkuSubmit}
               loading={loading}
-              onCancel={() => setShowForm(false)} 
+              onCancel={handleCancelClick} 
             />
           )}
 
