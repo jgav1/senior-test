@@ -162,6 +162,7 @@ export default function Parts() {
       <div className="flex space-x-4 border-b pb-2 mb-4">
         <button onClick={() => setTab('skus')} className={`${tab === 'skus' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>SKUs</button>
         <button onClick={() => setTab('parts')} className={`${tab === 'parts' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Parts</button>
+
       </div>
 
       {/* SKUs Tab */}

@@ -25,8 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <nav className="bg-white shadow px-6 py-4 flex gap-6 text-lg font-semibold">
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/parts">Parts</Link>
-          <Link href="/orders">Orders</Link>
-          <Link href="/customers">Customers</Link>
+          <Link href="/orders">Orders</Link>          
         </nav>
         <main className="p-6">{children}</main>
       </body>
