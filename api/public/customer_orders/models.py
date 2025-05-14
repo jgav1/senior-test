@@ -5,9 +5,12 @@ from datetime import datetime, timezone
 from enum import Enum
 import uuid
 from pydantic import EmailStr, field_validator
+
+from api.public.workshop_orders.models import WorkShopOrders
 if TYPE_CHECKING:
     from api.public.vehicles.models import Vehicle
     from api.public.customers.models import Customer
+    
     #from workshop.models import Workshop
 
 
@@ -39,6 +42,7 @@ class CustomerOrder(CustomerOrderBase, table=True):
 
     vehicle: Optional["Vehicle"] = Relationship(back_populates=None)  # one-way relationship
     customer: Optional["Customer"] = Relationship(back_populates=None)  # one-way relationship
+    workshop_orders: Optional["WorkShopOrders"] = Relationship(back_populates=None)  # one-way relationship
 
 class CustomerOrderCreate(CustomerOrderBase):
     vehicle_id: uuid.UUID
@@ -67,4 +71,4 @@ class CustomerOrderUpdate(CustomerOrderBase):
     customer_id: Optional[uuid.UUID] = None
 
 
-   
+CustomerOrder.model_rebuild()  
