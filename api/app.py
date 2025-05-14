@@ -6,6 +6,8 @@ from api.config import Settings
 from api.database import create_db_and_tables
 from api.public import api as public_api
 from api.utils.logger import logger_config
+from fastapi.middleware.cors import CORSMiddleware
+
 
 logger = logger_config(__name__)
 
@@ -30,6 +32,14 @@ def create_app(settings: Settings):
         description=settings.DESCRIPTION,
         lifespan=lifespan,
     )
+
+    app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],  # or list like ["GET", "POST"]
+    allow_headers=["*"],  # or ["Authorization", "Content-Type"]
+)
 
     app.include_router(public_api)
 
