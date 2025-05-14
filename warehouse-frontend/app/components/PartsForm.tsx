@@ -1,16 +1,24 @@
-// src/components/PartForm.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface PartFormProps {
   onSubmit: (quantity: number, sku_id: string) => void;
   loading: boolean;
   onCancel: () => void;
   availableSkus: { id: string; sku_value: string }[]; // List of available SKUs with ids
+  initialValues?: { quantity: number; sku_id: string }; // Optional initial values for editing
 }
 
-const PartForm: React.FC<PartFormProps> = ({ onSubmit, loading, onCancel, availableSkus }) => {
-  const [quantity, setQuantity] = useState<number>(1); // Default quantity is 1
-  const [skuId, setSkuId] = useState<string>(availableSkus[0]?.id || ''); // Default to first SKU
+const PartForm: React.FC<PartFormProps> = ({ onSubmit, loading, onCancel, availableSkus, initialValues }) => {
+  const [quantity, setQuantity] = useState<number>(initialValues?.quantity || 1); // Default quantity is 1 or from initialValues
+  const [skuId, setSkuId] = useState<string>(initialValues?.sku_id || (availableSkus[0]?.id || '')); // Default to first SKU or from initialValues
+
+  // Update state if initialValues changes (e.g., when editing an existing part)
+  useEffect(() => {
+    if (initialValues) {
+      setQuantity(initialValues.quantity);
+      setSkuId(initialValues.sku_id);
+    }
+  }, [initialValues]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
