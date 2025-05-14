@@ -2,15 +2,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { fetchSkus, createSku } from '@/lib/api'
+import { fetchSkus, createSku, deleteSku } from '@/lib/api'
 import SKUForm from '../components/SKUForm'
+import ListWithDelete from '../components/ListWithDelete'
 
 export default function Parts() {
   const [skus, setSkus] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [deleteMode, setDeleteMode] = useState(false)
   const [tab, setTab] = useState<'skus' | 'parts' | 'inventory'>('skus')
-  const [errorMessage, setErrorMessage] = useState<string | null>(null) // State for error message
 
   const loadSkus = async () => {
     try {
@@ -27,18 +28,35 @@ export default function Parts() {
 
   const handleSkuSubmit = async (sku_value: string, description: string, size: string) => {
     setLoading(true)
-    setErrorMessage(null) // Reset error message before each submission attempt
     try {
       await createSku({ sku_value, description, size })
       loadSkus()
       setShowForm(false)
     } catch (err) {
       console.error(err)
-      setErrorMessage('Failed to create SKU') // Set error message if API call fails
     } finally {
       setLoading(false)
     }
   }
+
+  const handleDeleteSku = async (skuId: string) => {
+    setLoading(true)
+    try {
+      await deleteSku(skuId)
+      loadSkus()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+      setDeleteMode(false)
+    }
+  }
+
+  const renderSku = (sku: any) => (
+    <div>
+      <strong>SKU: {sku.sku_value}</strong> | Description: {sku.description} | Size: {sku.size}
+    </div>
+  )
 
   return (
     <div className="space-y-4">
@@ -70,6 +88,12 @@ export default function Parts() {
                 Cancel
               </button>
             )}
+            <button
+              onClick={() => setDeleteMode(!deleteMode)}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              {deleteMode ? 'Cancel Delete' : 'Delete SKU'}
+            </button>
           </div>
 
           {showForm && (
@@ -80,18 +104,13 @@ export default function Parts() {
             />
           )}
 
-          {/* Error message display */}
-          {errorMessage && (
-            <div className="text-red-600 text-sm mt-2">{errorMessage}</div>
-          )}
-
-          <ul className="space-y-2">
-            {skus.map((sku) => (
-              <li key={sku.id} className="border-b pb-2">
-                <strong>SKU: {sku.sku_value}</strong> | Description: {sku.description} | Size: {sku.size}
-              </li>
-            ))}
-          </ul>
+          <ListWithDelete
+            items={skus}
+            renderItem={renderSku}
+            deleteMode={deleteMode}
+            onItemSelect={(id) => console.log(`Item selected: ${id}`)} // Handle item selection if needed
+            onDeleteItem={handleDeleteSku} // Call delete handler when item is deleted
+          />
         </div>
       )}
 

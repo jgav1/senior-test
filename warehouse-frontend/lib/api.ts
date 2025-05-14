@@ -21,3 +21,11 @@ export async function createSku(data: { sku_value: string; description: string, 
   if (!res.ok) throw new Error('Failed to create SKU');
   return res.json();
 }
+
+export async function deleteSku(item_id: string) {
+  const res = await fetch(`${API_BASE_URL}/skus/${item_id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete SKU');
+  return res.json();
+}
