@@ -347,10 +347,18 @@ const returnJobsTab = () => {
 
 const returnOrderJobsTab = () => {  
   const orderJobStrings = convertOrderJobsToStrings(orderJobs);
-    const handleSelect = (itemId: string) => {
-    if (deleteMode) {
-      setSelectedItemOrderJobId(itemId);
-    }
+     const handleSelect = (item: string) => {
+    
+          const regex = /Order id: ([a-f0-9\-]+) \| Job id: ([a-f0-9\-]+)/;
+      const match = item.match(regex);
+
+
+      if (match && match[1] && match[2]) {
+        const workshopOrderId = match[1];
+        const jobId = match[2];
+        deleteWorkshopOrderJobs(workshopOrderId, jobId);
+
+      }
   };
 
   return (
@@ -378,12 +386,20 @@ const returnOrderJobsTab = () => {
       <h2>Order Jobs List</h2>
       <ul>
         {orderJobStrings.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index} className="flex justify-between items-center">
+            <span>{item}</span>
 
-          
-          
-        )
-        )}
+            {/* Render delete button only if deleteMode is enabled */}
+            {true && (
+              <button
+                onClick={() => handleSelect(item)} // Trigger handleSelect when the button is clicked
+                className="text-red-600 hover:text-red-800 ml-2"
+              >
+                Delete
+              </button>
+            )}
+          </li>
+        ))}
       </ul>
     </div>
 
