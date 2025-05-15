@@ -183,7 +183,7 @@ export default function Parts() {
   const renderCustomer = (customer: any) => (
     <div>
       <strong>{customer.name}</strong> | Email: {customer.email} | Last Name: {customer.last_name}
-      <button onClick={() => setEditingCustomer(customer)} className="text-blue-500 ml-2">Edit</button>
+      
       {!editingCustomer && (
         <button onClick={() => handleDeleteCustomer(customer.id)} className="text-red-500 ml-2">Delete</button>
       )}
@@ -194,7 +194,7 @@ export default function Parts() {
   const renderVehicleType = (vehicleType: any) => (
     <div>
       <strong>{vehicleType.model}</strong> | Company: {vehicleType.company} | Color: {vehicleType.color}
-      <button onClick={() => setEditingVehicleType(vehicleType)} className="text-blue-500 ml-2">Edit</button>
+      
       {!editingVehicleType && (
         <button onClick={() => handleDeleteVehicleType(vehicleType.id)} className="text-red-500 ml-2">Delete</button>
       )}
@@ -205,7 +205,7 @@ export default function Parts() {
   const renderVehicle = (vehicle: any) => (
     <div>
       <strong>{vehicle.vin}</strong> | License Plate: {vehicle.license_plate} | Customer ID: {vehicle.customer_id}
-      <button onClick={() => setEditingVehicle(vehicle)} className="text-blue-500 ml-2">Edit</button>
+      
       {!editingVehicle && (
         <button onClick={() => handleDeleteVehicle(vehicle.id)} className="text-red-500 ml-2">Delete</button>
       )}
