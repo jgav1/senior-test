@@ -222,3 +222,67 @@ async def calculate_order_count_by_state() -> dict:
             raise Exception(f"Error fetching workshop orders: {response.status_code}")
 
 
+async def get_optimized_order() -> dict:
+    async with httpx.AsyncClient() as client:
+        try:
+            optimized_order_response = await client.get(f"{base_url}/services/optimized_order_by_expected_profit")
+            
+            if optimized_order_response.status_code != 200:
+                raise Exception("Failed to fetch optimized order")
+            
+
+            optimized_order_data = optimized_order_response.json()
+            optimized_order_id = optimized_order_data['optimized_order']['best_order_id']
+            expected_profit = optimized_order_data['optimized_order']['expected_profit']
+
+        
+            workshop_order_response = await client.get(f"{base_url}/workshop_orders/{optimized_order_id}")
+            
+            if workshop_order_response.status_code != 200:
+                raise Exception(f"Failed to fetch workshop order {optimized_order_id}")
+                
+            workshop_order_data = workshop_order_response.json()
+            order_description = workshop_order_data.get('description', 'No description available')
+            customer_order_id = workshop_order_data.get('customer_order_id', None)
+            
+            if customer_order_id:
+                customer_order_response = await client.get(f"{base_url}/customer_orders/{customer_order_id}")
+
+                if customer_order_response.status_code != 200:
+                    raise Exception(f"Failed to fetch customer details for customer_order_id {customer_order_id}")
+
+                customer_order_data = customer_order_response.json()
+                customer_id = customer_order_data.get('customer_id', None)
+                
+                if customer_id:
+                    customer_response = await client.get(f"{base_url}/customers/{customer_id}")
+
+                    if customer_response.status_code != 200:
+                        raise Exception(f"Failed to fetch customer details for customer_id {customer_id}")
+
+                    customer_data = customer_response.json()
+                    customer_name = customer_data.get('name', 'No name available')
+                    customer_last_name = customer_data.get('last_name', 'No last name available')
+
+
+            else:
+                customer_name = 'No customer information available'
+                customer_last_name = 'No customer information available'
+
+             
+
+            
+            optimized_next_order = {
+                "customerName": customer_name + " " + customer_last_name,
+                "id": optimized_order_id,
+                "description": order_description,
+                "expectedProfit": expected_profit
+            }
+
+            return optimized_next_order
+        except Exception as e:
+            print(f"Error fetching optimized order: {str(e)}")
+            return {"error": str(e)}
+
+
+
