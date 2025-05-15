@@ -10,7 +10,7 @@ import WorkshopOrderForm from '../components/WorkshopOrderForm';
 import JobForm from '../components/JobForm';
 import OrderJobsForm from '../components/OrderJobsForm';
 import ListWithDelete from '../components/ListWithDelete';
-import OrderJobsRender from '../components/returnOrderJobsTab';
+import OrderJobsRender from '../components/OrderJobsRender';
 
 
 interface Job {
