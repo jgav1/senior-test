@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import CustomerOrderElement from './CustomerOrderElements'
+import CustomerOrderElement from './CustomerOrderElement'
+import EmployeeOrderElement from './EmployeeOrderElement'
 
 export default function Customers() {
   const [view, setView] = useState<'customer' | 'employee'>('customer')
@@ -28,9 +29,7 @@ export default function Customers() {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="bg-white p-4 rounded shadow">[TODO: View Customer Orders + Create Workshop Order]</div>
-          <div className="bg-white p-4 rounded shadow">[TODO: Create Jobs + Assign SKU]</div>
-          <div className="bg-white p-4 rounded shadow">[TODO: Manage Workshop Order Status]</div>
+            <EmployeeOrderElement />
         </div>
       )}
     </div>
