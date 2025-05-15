@@ -7,6 +7,7 @@ import {fetchCustomerOrders, createCustomerOrders,deleteCustomerOrders,updateCus
 import { useState, useEffect, use } from 'react';
 import HeaderWithActions from '../components/HeaderWithActions';
 import WorkshopOrderForm from '../components/WorkshopOrderForm';
+import JobForm from '../components/JobForm';
 import ListWithDelete from '../components/ListWithDelete';
 
 
@@ -66,6 +67,7 @@ const loadCustomerOrders = async () => {
    setLoading(true)
    setErrorMessage(null)
     try {
+      
       if (editingWorkshopOrder) {
         await updateWorkshopOrders(editingWorkshopOrder.id, data)
         setEditingWorkshopOrder(null)
@@ -83,25 +85,33 @@ const loadCustomerOrders = async () => {
 
   }
 
-  const handleJobSubmit = async (data: { description: string, job_type: string, max_days: string, total_fixed_cost: string,total_profit: string }) => {
-    setLoading(true)
-    setErrorMessage(null)
-    try {
-      if (editingJob) {
-        await updateJobs(editingJob.id, data)
-        setEditingJob(null)
-      } else {
-        await createJobs(data)
-      }
-      loadJobs()
-      setShowForm(false)
-    } catch (err) {
-      console.error(err)
-      setErrorMessage('Failed to save job')
-    } finally {
-      setLoading(false)
+const handleJobSubmit = async (
+  description: string,
+  job_type: string,
+  max_days: number,
+  total_fixed_cost: number,
+  total_profit: number
+) => {
+  setLoading(true);
+  setErrorMessage(null);
+  try {
+    const data = { description, job_type, max_days, total_fixed_cost, total_profit };
+    if (editingJob) {
+      await updateJobs(editingJob.id, data);
+      setEditingJob(null);
+    } else {
+      await createJobs(data);
     }
+    loadJobs();
+    setShowForm(false);
+  } catch (err) {
+    console.error(err);
+    setErrorMessage('Failed to save job');
+  } finally {
+    setLoading(false);
   }
+};
+
 
   const handleDeleteWorkshopOrder = async (workshop_order_id: string) => {
     if(!editingWorkshopOrder){
@@ -148,8 +158,9 @@ const loadCustomerOrders = async () => {
 const renderWorkshopOrders = (workshop: any) => {
   return (
     <div>
-      <strong>Customer Order Id: {workshop.customer_order_id}</strong>
-      <span>Description: {workshop.description}</span>
+      <h2 className="text-lg font-bold">Workshop Id: {workshop.id}</h2>
+      <span>| Customer Order Id: {workshop.customer_order_id}</span>
+      <span>| Description: {workshop.description}</span>
       <span>| Max Days to complete: {workshop.max_days}</span>
       <span>| State: {workshop.state}</span>
       <span>| Total Fixed Cost: {workshop.total_fixed_cost}</span>
@@ -164,15 +175,20 @@ const renderWorkshopOrders = (workshop: any) => {
   );
 };
 
-const renderJobs = (job: any) => {
+const renderJobs = (jobs: any) => {
   return (
     <div>
-      <h2 className="text-lg font-bold">Job Id: {job.id}</h2>
-      <span>| Description: {job.description}</span>
-      <span>| Job Type: {job.job_type}</span>
-      <span>| Max Days to complete: {job.max_days}</span>
-      <span>| Total Fixed Cost: {job.total_fixed_cost}</span>
-      <span>| Total Profit: {job.total_profit}</span>
+      <h2 className="text-lg font-bold">Job Id: {jobs.id}</h2>
+      <span>| Description: {jobs.description}</span>
+      <span>| Job Type: {jobs.job_type}</span>
+      <span>| Max Days to complete: {jobs.max_days}</span>
+      <span>| Total Fixed Cost: {jobs.total_fixed_cost}</span>
+      <span>| Total Profit: {jobs.total_profit}</span>
+            {!editingJob && (
+        <button onClick={() => handleDeleteJob(jobs.id)} className="text-red-500 ml-2">
+          Delete
+        </button>
+      )}
     </div>
   );
 };
@@ -209,6 +225,38 @@ const returnWorkShopTab = () => {
   );
 };
 
+const returnJobsTab = () => {
+  return (
+    <div className="bg-white p-6 rounded-2xl shadow">
+      <HeaderWithActions
+        title="Jobs"
+        onCreateClick={handleCreateClick}
+        onCancelClick={handleCancelClick}
+        deleteMode={deleteMode}
+        onDeleteModeToggle={handleDeleteModeToggle}
+        createButtonLabel="Create Job"
+        deleteButtonLabel="Delete Job"
+      />
+      {showForm && (
+        <JobForm
+          onSubmit={handleJobSubmit}
+          loading={loading}
+          onCancel={handleCancelClick}
+        />
+      )}
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <ListWithDelete
+        items={jobs}
+        renderItem={renderJobs}
+        deleteMode={deleteMode}
+        onItemSelect={(id) => console.log(`Item selected: ${id}`)}
+        onDeleteItem={handleDeleteJob}
+      />
+      
+    </div>
+  );
+};
+
 
 
   return (
@@ -229,6 +277,11 @@ const returnWorkShopTab = () => {
       )}
 
       {/* Jobs Tab */}
+      {tab === 'jobs' && (
+        <div className="bg-white p-6 rounded-2xl shadow">
+          {returnJobsTab()}
+        </div>
+      )}
 
     </div>
   )
