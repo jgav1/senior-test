@@ -3,25 +3,29 @@
 import { useEffect, useState } from 'react'
 import { fetchCustomers, createCustomer, deleteCustomer, updateCustomer } from '@/lib/customer/api'
 import { fetchVehicles, createVehicle, deleteVehicle, updateVehicle, fetchVehicleTypes, createVehicleType, deleteVehicleType, updateVehicleType } from '@/lib/vehicle/api'
+import {fetchCustomerOrders, createCustomerOrders,deleteCustomerOrders,updateCustomerOrders} from '@/lib/customer_order/api'
 import CustomerForm from '../components/CustomerForm'
 import VehicleTypeForm from '../components/VehicleTypeForm'
 import VehicleForm from '../components/VehicleForm'
 import ListWithDelete from '../components/ListWithDelete'
 import HeaderWithActions from '../components/HeaderWithActions'
+import CustomerOrderForm from '../components/CustomerOrderForm'
 
 export default function Parts() {
   const [customers, setCustomers] = useState<any[]>([])    // State to store Customers
   const [vehicleTypes, setVehicleTypes] = useState<any[]>([])    // State to store Vehicle Types
   const [vehicles, setVehicles] = useState<any[]>([])    // State to store Vehicles
+  const [customerOrders, setCustomerOrders] = useState<any[]>([])    // State to store Customer Orders
   const [loading, setLoading] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [deleteMode, setDeleteMode] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [tab, setTab] = useState<'customers' | 'vehicle_types' | 'vehicles'>('customers')  // Tab state to toggle between Customer, Vehicle Type, and Vehicle
+  const [tab, setTab] = useState<'customers' | 'vehicle_types' | 'vehicles' | 'customer_orders'>('customers')  // Tab state to toggle between Customer, Vehicle Type, and Vehicle
 
   const [editingCustomer, setEditingCustomer] = useState<any | null>(null) // State for Customer currently being edited
   const [editingVehicleType, setEditingVehicleType] = useState<any | null>(null) // State for VehicleType currently being edited
   const [editingVehicle, setEditingVehicle] = useState<any | null>(null) // State for Vehicle currently being edited
+  const [editingCustomerOrders, setEditingCustomerOrders] = useState<any | null>(null) // State for CustomerOrder currently being edited
 
   // Fetch Customers from the backend
   const loadCustomers = async () => {
@@ -52,11 +56,21 @@ export default function Parts() {
       console.error(err)
     }
   }
+  // Fetch Customer Orders from the backend
+  const loadCustomerOrders = async () => {
+    try {
+      const data = await fetchCustomerOrders()
+      setCustomerOrders(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   useEffect(() => {
     loadCustomers()
     loadVehicleTypes()
     loadVehicles()
+    loadCustomerOrders()
   }, [])
 
   // Handle Customer creation
@@ -122,6 +136,27 @@ export default function Parts() {
     }
   }
 
+  // Handle Customer Order creation
+  const handleCustomerOrderSubmit = async (customer_id: string, description: string, vehicle_id: string) => {
+    setLoading(true)
+    setErrorMessage(null)
+    try {
+      if (editingCustomerOrders) {
+        await updateCustomerOrders(editingCustomerOrders.id, { customer_id, description, vehicle_id }) // Update existing Customer Order
+        setEditingCustomerOrders(null)
+      } else {
+        await createCustomerOrders({ customer_id, description, vehicle_id }) // Create new Customer Order
+      }
+      loadCustomerOrders()
+      setShowForm(false)
+    } catch (err) {
+      console.error(err)
+      setErrorMessage('Failed to save Customer Order. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Handle Customer deletion
   const handleDeleteCustomer = async (customerId: string) => {
     if (!editingCustomer) { // Only allow delete if not in edit mode
@@ -169,6 +204,21 @@ export default function Parts() {
       }
     }
   }
+  // Handle Customer Order deletion
+  const handleDeleteCustomerOrder = async (customerOrderId: string) => {
+    if (!editingCustomerOrders) { // Only allow delete if not in edit mode
+      setLoading(true)
+      try {
+        await deleteCustomerOrders(customerOrderId)
+        loadCustomerOrders()
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+        setDeleteMode(false)
+      }
+    }
+  }
 
   const handleCreateClick = () => setShowForm(true)
   const handleCancelClick = () => {
@@ -176,6 +226,7 @@ export default function Parts() {
     setEditingCustomer(null)
     setEditingVehicleType(null)
     setEditingVehicle(null)
+    setEditingCustomerOrders(null)
   }
   const handleDeleteModeToggle = () => setDeleteMode(!deleteMode)
 
@@ -204,13 +255,24 @@ export default function Parts() {
   // Render Vehicle items
   const renderVehicle = (vehicle: any) => (
     <div>
-      <strong>{vehicle.vin}</strong> | License Plate: {vehicle.license_plate} | Customer ID: {vehicle.customer_id}
+      <strong>{vehicle.vin}</strong> | License Plate: {vehicle.license_plate} | Customer: {customers.find((customer) => customer.id === vehicle.customer_id)?.name} {customers.find((customer) => customer.id === vehicle.customer_id)?.last_name} | Vehicle Type: {vehicleTypes.find((type) => type.id === vehicle.vehicle_type_id)?.model} {vehicleTypes.find((type) => type.id === vehicle.vehicle_type_id)?.color} {vehicleTypes.find((type) => type.id === vehicle.vehicle_type_id)?.year}
       
       {!editingVehicle && (
         <button onClick={() => handleDeleteVehicle(vehicle.id)} className="text-red-500 ml-2">Delete</button>
       )}
     </div>
   )
+  const renderCustomerOrder = (customerOrder: any) => (
+    <div>
+      <strong>{customerOrder.description}</strong> | Customer ID: {customerOrder.customer_id} | Vehicle ID: {customerOrder.vehicle_id}
+      
+      {!editingCustomerOrders && (
+        <button onClick={() => handleDeleteCustomerOrder(customerOrder.id)} className="text-red-500 ml-2">Delete</button>
+      )}
+    </div>
+  )
+
+
 
   return (
     <div className="space-y-4">
@@ -220,6 +282,7 @@ export default function Parts() {
         <button onClick={() => setTab('customers')} className={`${tab === 'customers' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Customers</button>
         <button onClick={() => setTab('vehicle_types')} className={`${tab === 'vehicle_types' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Vehicle Types</button>
         <button onClick={() => setTab('vehicles')} className={`${tab === 'vehicles' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Vehicles</button>
+        <button onClick={() => setTab('customer_orders')} className={`${tab === 'customer_orders' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Customer Orders</button>
       </div>
 
       {/* Customers Tab */}
@@ -310,6 +373,38 @@ export default function Parts() {
             deleteMode={deleteMode}
             onItemSelect={(id) => console.log(`Item selected: ${id}`)}
             onDeleteItem={handleDeleteVehicle}
+          />
+        </div>
+      )}
+
+      {/* Customer Orders Tab */}
+      {tab === 'customer_orders' && (
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <HeaderWithActions
+            title="Customer Orders"
+            onCreateClick={handleCreateClick}
+            onCancelClick={handleCancelClick}
+            deleteMode={deleteMode}
+            onDeleteModeToggle={handleDeleteModeToggle}
+            createButtonLabel="Create Customer Order"
+            deleteButtonLabel="Delete Customer Order"
+          />
+          {showForm && (
+            <CustomerOrderForm
+              onSubmit={handleCustomerOrderSubmit}
+              loading={loading}
+              onCancel={handleCancelClick}
+              customers={customers}
+              vehicles={vehicles}
+            />
+          )}
+          {errorMessage && <div className="text-red-600 text-sm mt-2">{errorMessage}</div>}
+          <ListWithDelete
+            items={customerOrders}
+            renderItem={renderCustomerOrder}
+            deleteMode={deleteMode}
+            onItemSelect={(id) => console.log(`Item selected: ${id}`)}
+            onDeleteItem={handleDeleteCustomerOrder}
           />
         </div>
       )}
