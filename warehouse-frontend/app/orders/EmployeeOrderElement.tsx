@@ -224,33 +224,11 @@ const returnWorkShopTab = () => {
       {/* Workshop Orders Tab */}
       {tab === 'workshop_orders' && (
         <div className="bg-white p-6 rounded-2xl shadow">
-          <HeaderWithActions
-            title="Workshop Orders"
-            onCreateClick={handleCreateClick}
-            onCancelClick={handleCancelClick}
-            deleteMode={deleteMode}
-            onDeleteModeToggle={handleDeleteModeToggle}
-            createButtonLabel="Create Workshop Order"
-            deleteButtonLabel="Delete Workshop Order"
-          />
-          {showForm && (
-            <WorkshopOrderForm
-            onSubmit={handleWorkshopOrderSubmit}
-            loading={loading}
-            onCancel={handleCancelClick}
-            customerOrders={customerOrders}           
-            />
-            )}
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          <ListWithDelete
-            items={workshoporders}
-            renderItem={renderWorkshopOrders}
-            deleteMode={deleteMode}
-            onItemSelect={(id) => console.log(`Item selected: ${id}`)}
-            onDeleteItem={handleDeleteWorkshopOrder}
-          />
+          {returnWorkShopTab()}
         </div>
       )}
+
+      {/* Jobs Tab */}
 
     </div>
   )

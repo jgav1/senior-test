@@ -210,15 +210,21 @@ const WorkshopOrderForm: React.FC<WorkshopOrderFormProps> = ({
       </div>
 
       <div>
-        <button
-          type="submit"
-          className={`mt-2 block w-full rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            loading ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-          disabled={!isFormValid || loading}
-        >
-          {loading ? 'Creating...' : 'Create Workshop Order'}
-        </button>
+      <button
+        type="submit"
+        disabled={!isFormValid}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        {loading ? 'Creating...' : 'Submit'}
+      </button>
+
+      <button
+        type="button"
+        onClick={onCancel}
+        className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+      >
+        Cancel
+      </button>
       </div>
     </form>
   );
