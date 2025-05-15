@@ -10,6 +10,7 @@ import WorkshopOrderForm from '../components/WorkshopOrderForm';
 import JobForm from '../components/JobForm';
 import OrderJobsForm from '../components/OrderJobsForm';
 import ListWithDelete from '../components/ListWithDelete';
+import OrderJobsRender from '../components/returnOrderJobsTab';
 
 
 interface Job {
@@ -40,6 +41,26 @@ const [editingJob, setEditingJob] = useState<any | null>(null)
 const [editingOrderJob, setEditingOrderJob] = useState<any | null>(null)
 const [editingSkuJob, setEditingSkuJob] = useState<any | null>(null)
 const [selectedItemOrderJobId, setSelectedItemOrderJobId] = useState<string | null>(null)
+const [orderJobStrings, setOrderJobStrings] = useState<string[]>([
+    'Order id: 1 | Job id: job1',
+    'Order id: 1 | Job id: job2',
+    'Order id: 2 | Job id: job3',
+  ]);
+
+  const deleteOrderJobs = (workshop_order_id: string, job_id: string) => {
+
+    deleteWorkshopOrderJobs(workshop_order_id, job_id);
+
+
+    setOrderJobStrings((prevStrings) =>
+      prevStrings.filter(
+        (item) =>
+          !item.includes(`Order id: ${workshop_order_id}`) ||
+          !item.includes(`Job id: ${job_id}`)
+      )
+    );
+    loadOrderJobs();
+  };
 
 const convertOrderJobsToStrings = (orderJobs: OrderJob[]): string[] => {
   const strings: string[] = [];
@@ -346,21 +367,7 @@ const returnJobsTab = () => {
 };
 
 const returnOrderJobsTab = () => {  
-  const orderJobStrings = convertOrderJobsToStrings(orderJobs);
-     const handleSelect = (item: string) => {
-    
-          const regex = /Order id: ([a-f0-9\-]+) \| Job id: ([a-f0-9\-]+)/;
-      const match = item.match(regex);
-
-
-      if (match && match[1] && match[2]) {
-        const workshopOrderId = match[1];
-        const jobId = match[2];
-        deleteWorkshopOrderJobs(workshopOrderId, jobId);
-
-      }
-  };
-
+ 
   return (
     <div className="bg-white p-6 rounded-2xl shadow">
       <HeaderWithActions
@@ -380,28 +387,10 @@ const returnOrderJobsTab = () => {
         />
       )}
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-      {/*<OrderJobRenderList orderJobs={orderJobs} onDeleteItem={handleDeleteOrderJob} />*/}
-      
-      <div>
-      <h2>Order Jobs List</h2>
-      <ul>
-        {orderJobStrings.map((item, index) => (
-          <li key={index} className="flex justify-between items-center">
-            <span>{item}</span>
-
-            {/* Render delete button only if deleteMode is enabled */}
-            {true && (
-              <button
-                onClick={() => handleSelect(item)} // Trigger handleSelect when the button is clicked
-                className="text-red-600 hover:text-red-800 ml-2"
-              >
-                Delete
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+      <OrderJobsRender
+        orderJobStrings={convertOrderJobsToStrings(orderJobs)}
+        deleteWorkshopOrderJobs={deleteOrderJobs}
+      />
 
     </div>
   );
