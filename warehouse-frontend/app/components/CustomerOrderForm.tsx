@@ -4,8 +4,8 @@ interface CustomerOrderFormProps {
   onSubmit: (customer_id: string, description: string, vehicle_id: string) => void;
   loading: boolean;
   onCancel: () => void;
-  customers: { id: string; name: string }[]; // List of customers
-  vehicles: { id: string; vin: string }[];  // List of vehicles
+  customers: { id: string; name: string; last_name: string }[]; // List of customers
+  vehicles: { id: string; vin: string; customer_id: string }[];  // List of vehicles
 }
 
 const CustomerOrderForm: React.FC<CustomerOrderFormProps> = ({
@@ -21,6 +21,7 @@ const CustomerOrderForm: React.FC<CustomerOrderFormProps> = ({
 
   const handleCustomerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCustomer(e.target.value);
+    setSelectedVehicle(null); // Reset vehicle when customer is changed
   };
 
   const handleVehicleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -40,6 +41,11 @@ const CustomerOrderForm: React.FC<CustomerOrderFormProps> = ({
 
   const isFormValid = selectedCustomer && selectedVehicle && description;
 
+  // Filter vehicles based on the selected customer's ID
+  const filteredVehicles = selectedCustomer
+    ? vehicles.filter((vehicle) => vehicle.customer_id === selectedCustomer)
+    : [];
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mb-4">
       <div>
@@ -53,7 +59,7 @@ const CustomerOrderForm: React.FC<CustomerOrderFormProps> = ({
           <option value="">Select a Customer</option>
           {customers.map((customer) => (
             <option key={customer.id} value={customer.id}>
-              {customer.name}
+              {customer.name} {customer.last_name}
             </option>
           ))}
         </select>
@@ -68,7 +74,7 @@ const CustomerOrderForm: React.FC<CustomerOrderFormProps> = ({
           required
         >
           <option value="">Select a Vehicle</option>
-          {vehicles.map((vehicle) => (
+          {filteredVehicles.map((vehicle) => (
             <option key={vehicle.id} value={vehicle.id}>
               {vehicle.vin}
             </option>

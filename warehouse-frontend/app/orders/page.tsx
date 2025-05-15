@@ -255,8 +255,11 @@ export default function Parts() {
   // Render Vehicle items
   const renderVehicle = (vehicle: any) => (
     <div>
-      <strong>{vehicle.vin}</strong> | License Plate: {vehicle.license_plate} | Customer: {customers.find((customer) => customer.id === vehicle.customer_id)?.name} {customers.find((customer) => customer.id === vehicle.customer_id)?.last_name} | Vehicle Type: {vehicleTypes.find((type) => type.id === vehicle.vehicle_type_id)?.model} {vehicleTypes.find((type) => type.id === vehicle.vehicle_type_id)?.color} {vehicleTypes.find((type) => type.id === vehicle.vehicle_type_id)?.year}
-      
+      <strong> Vin: {vehicle.vin}</strong> 
+      <span>| License Plate: {vehicle.license_plate}</span>
+      <span>| Customer: {customers.find((customer) => customer.id === vehicle.customer_id)?.name} {customers.find((customer) => customer.id === vehicle.customer_id)?.last_name} </span> 
+      <span>| Vehicle Type: {vehicles.find((type) => type.id === vehicle.vehicle_type_id)?.model} {vehicles.find((type) => type.id === vehicle.vehicle_type_id)?.color} {vehicles.find((type) => type.id === vehicle.vehicle_type_id)?.year}</span>
+
       {!editingVehicle && (
         <button onClick={() => handleDeleteVehicle(vehicle.id)} className="text-red-500 ml-2">Delete</button>
       )}
@@ -264,8 +267,11 @@ export default function Parts() {
   )
   const renderCustomerOrder = (customerOrder: any) => (
     <div>
-      <strong>{customerOrder.description}</strong> | Customer ID: {customerOrder.customer_id} | Vehicle ID: {customerOrder.vehicle_id}
-      
+      <strong>{customerOrder.description}</strong>
+      <span> | Customer: {customers.find((customer) => customer.id === customerOrder.customer_id)?.name} {customers.find((customer) => customer.id === customerOrder.customer_id)?.last_name}</span>
+      <span> | Vehicle Type: {vehicles.find((type) => type.id === customerOrder.vehicle_id)?.model} {vehicles.find((type) => type.id === customerOrder.vehicle_id)?.color} {vehicles.find((type) => type.id === customerOrder.vehicle_id)?.year}</span>
+
+
       {!editingCustomerOrders && (
         <button onClick={() => handleDeleteCustomerOrder(customerOrder.id)} className="text-red-500 ml-2">Delete</button>
       )}
