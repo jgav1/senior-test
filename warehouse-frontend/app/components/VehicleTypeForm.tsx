@@ -20,7 +20,7 @@ const VehicleTypeForm: React.FC<VehicleTypeFormProps> = ({ onSubmit, loading, on
     color: 'Red',
     company: 'Toyota',
     model: 'Corolla',
-    version: '2025',
+    version: 'Touring',
     year: '2025', // Placeholder for year
   };
 
