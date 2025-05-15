@@ -7,6 +7,8 @@ import {fetchCustomerOrders, createCustomerOrders,deleteCustomerOrders,updateCus
 import { useState, useEffect, use } from 'react';
 import HeaderWithActions from '../components/HeaderWithActions';
 import WorkshopOrderForm from '../components/WorkshopOrderForm';
+import ListWithDelete from '../components/ListWithDelete';
+
 
 
 
@@ -143,30 +145,69 @@ const loadCustomerOrders = async () => {
   }
   const handleDeleteModeToggle = () => setDeleteMode(!deleteMode)
 
-  const renderWorkshopOrders = (workshop:any) => {
+const renderWorkshopOrders = (workshop: any) => {
+  return (
     <div>
-      <h2 className="text-lg font-bold">Customer Order Id:{workshop.customer_order_id}</h2>
-      Description: {workshop.description}
-      Max Days to complete: {workshop.max_days}
-      State: {workshop.state}
-      Total Fixed Cost: {workshop.total_fixed_cost}
-      Total Profit: {workshop.total_profit}
-      Total Variable Cost: {workshop.total_variable_cost}
+      <strong>Customer Order Id: {workshop.customer_order_id}</strong>
+      <span>Description: {workshop.description}</span>
+      <span>| Max Days to complete: {workshop.max_days}</span>
+      <span>| State: {workshop.state}</span>
+      <span>| Total Fixed Cost: {workshop.total_fixed_cost}</span>
+      <span>| Total Profit: {workshop.total_profit}</span>
+      <span>| Total Variable Cost: {workshop.total_variable_cost}</span>
+      {!editingWorkshopOrder && (
+        <button onClick={() => handleDeleteWorkshopOrder(workshop.id)} className="text-red-500 ml-2">
+          Delete
+        </button>
+      )}
     </div>
+  );
+};
 
-  }
-
-  const renderJobs = (job:any) => {
+const renderJobs = (job: any) => {
+  return (
     <div>
-      <h2 className="text-lg font-bold">Job Id:{job.id}</h2>
-      Description: {job.description}
-      Job Type: {job.job_type}
-      Max Days to complete: {job.max_days}
-      Total Fixed Cost: {job.total_fixed_cost}
-      Total Profit: {job.total_profit}
+      <h2 className="text-lg font-bold">Job Id: {job.id}</h2>
+      <span>| Description: {job.description}</span>
+      <span>| Job Type: {job.job_type}</span>
+      <span>| Max Days to complete: {job.max_days}</span>
+      <span>| Total Fixed Cost: {job.total_fixed_cost}</span>
+      <span>| Total Profit: {job.total_profit}</span>
     </div>
+  );
+};
 
-  }
+const returnWorkShopTab = () => {
+  return (
+    <div className="bg-white p-6 rounded-2xl shadow">
+      <HeaderWithActions
+        title="Workshop Orders"
+        onCreateClick={handleCreateClick}
+        onCancelClick={handleCancelClick}
+        deleteMode={deleteMode}
+        onDeleteModeToggle={handleDeleteModeToggle}
+        createButtonLabel="Create Workshop Order"
+        deleteButtonLabel="Delete Workshop Order"
+      />
+      {showForm && (
+        <WorkshopOrderForm
+          onSubmit={handleWorkshopOrderSubmit}
+          loading={loading}
+          onCancel={handleCancelClick}
+          customerOrders={customerOrders}
+        />
+      )}
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <ListWithDelete
+        items={workshoporders}
+        renderItem={renderWorkshopOrders}
+        deleteMode={deleteMode}
+        onItemSelect={(id) => console.log(`Item selected: ${id}`)}
+        onDeleteItem={handleDeleteWorkshopOrder}
+      />
+    </div>
+  );
+};
 
 
 
@@ -200,6 +241,14 @@ const loadCustomerOrders = async () => {
             customerOrders={customerOrders}           
             />
             )}
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          <ListWithDelete
+            items={workshoporders}
+            renderItem={renderWorkshopOrders}
+            deleteMode={deleteMode}
+            onItemSelect={(id) => console.log(`Item selected: ${id}`)}
+            onDeleteItem={handleDeleteWorkshopOrder}
+          />
         </div>
       )}
 
