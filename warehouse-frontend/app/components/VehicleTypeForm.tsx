@@ -2,7 +2,7 @@ import React from 'react';
 import BaseForm from './BaseForm';
 
 interface VehicleTypeFormProps {
-  onSubmit: (color: string, company: string, model: string, version: string, year: number) => void;
+  onSubmit: (color: string, company: string, model: string, version: string, year: string) => void;
   loading: boolean;
   onCancel: () => void;
 }
@@ -35,8 +35,7 @@ const VehicleTypeForm: React.FC<VehicleTypeFormProps> = ({ onSubmit, loading, on
   const handleSubmit = (formFields: { [key: string]: string }) => {
     const { color, company, model, version, year } = formFields;
     // Parsing year as a number before sending it to the API
-    const parsedYear = Number(year);
-    onSubmit(String(color), String(company), String(model), String(version), parsedYear);
+    onSubmit(String(color), String(company), String(model), String(version), String(year));
   };
 
   return (
