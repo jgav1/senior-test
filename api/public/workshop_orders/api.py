@@ -25,7 +25,7 @@ crud_workshop_orders_jobs = crud_workshop_orders_jobs_catalog
 def get_jobs(workshop_orders_id: UUID, db: Session = Depends(get_session)):
     return crud_workshop_orders_jobs.get_jobs_for_workshop_orders(db, workshop_orders_id)
 
-@router.post("/jobs", response_model=OrderJobsRead)
+@router.post("/{workshop_orders_id}/jobs/{jobs_id}", response_model=OrderJobsRead)
 def link_part_to_vehicle(
     link_data: OrderJobsCreate,
     db: Session = Depends(get_session)

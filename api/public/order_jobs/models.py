@@ -26,7 +26,7 @@ class OrderJobsCreate(SQLModel):
 
 class OrderJobsRead(SQLModel):
     workshop_orders_id: uuid.UUID
-    part_id: uuid.UUID
+    jobs_id: uuid.UUID
     created_at: datetime
     updated_at: Optional[datetime] = None
     model_config = {
