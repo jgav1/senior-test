@@ -8,7 +8,7 @@ export async function fetchVehicles() {
   return res.json();
 }
 
-export async function createVehicle(data: { make: string, model: string, year: number }) {
+export async function createVehicle(data: { customer_id: string, license_plate: string, vehicle_type_id: string, vin: string }) {
   const res = await fetch(`${API_BASE_URL}/vehicles`, {
     method: 'POST',
     headers: {
@@ -28,7 +28,7 @@ export async function deleteVehicle(vehicle_id: string) {
   return res.json();
 }
 
-export async function updateVehicle(vehicle_id: string, data: { make: string, model: string, year: number }) {
+export async function updateVehicle(vehicle_id: string, data: { customer_id: string, license_plate: string, vehicle_type_id: string, vin: string }) {
   const res = await fetch(`${API_BASE_URL}/vehicles/${vehicle_id}`, {
     method: 'PATCH',
     headers: {
@@ -47,7 +47,7 @@ export async function fetchVehicleTypes() {
   if (!res.ok) throw new Error('Failed to fetch vehicle types');
   return res.json();
 }
-export async function createVehicleType(data: { name: string }) {
+export async function createVehicleType(data: { color: string, company: string, model: string, version: string, year: string }) {
   const res = await fetch(`${API_BASE_URL}/vehicle_types`, {
     method: 'POST',
     headers: {
@@ -65,7 +65,7 @@ export async function deleteVehicleType(vehicle_type_id: string) {
   if (!res.ok) throw new Error('Failed to delete vehicle type');
   return res.json();
 }
-export async function updateVehicleType(vehicle_type_id: string, data: { name: string }) {
+export async function updateVehicleType(vehicle_type_id: string, data: { color: string, company: string, model: string, version: string, year: string }) {
   const res = await fetch(`${API_BASE_URL}/vehicle_types/${vehicle_type_id}`, {
     method: 'PATCH',
     headers: {
