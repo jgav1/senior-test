@@ -90,6 +90,7 @@ const loadCustomerOrders = async () => {
     try {
       const data = await fetchWorkshopOrders()
       setworkshopOrders(data)
+
     } catch (err) {
       console.error(err)
     }
@@ -99,6 +100,7 @@ const loadCustomerOrders = async () => {
     try {
       const data = await fetchJobs()
       setJobs(data)
+      console.log('Jobs:', data)
     } catch (err) {
       console.error(err)
     }
@@ -323,6 +325,7 @@ const returnWorkShopTab = () => {
         />
       )}
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
       <ListWithDelete
         items={workshoporders}
         renderItem={renderWorkshopOrders}
@@ -384,6 +387,8 @@ const returnOrderJobsTab = () => {
           onSubmit={handleOrderJobSubmit}
           loading={loading}
           onCancel={handleCancelClick}
+          workshopOrders={workshoporders}
+          jobs={jobs}
         />
       )}
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
