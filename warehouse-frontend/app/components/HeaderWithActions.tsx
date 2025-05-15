@@ -42,12 +42,7 @@ const HeaderWithActions: React.FC<HeaderWithActionsProps> = ({
       )}
 
       {/* Toggle Delete Mode Button */}
-      <button
-        onClick={onDeleteModeToggle}
-        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-      >
-        {deleteMode ? `Cancel ${deleteButtonLabel}` : deleteButtonLabel}
-      </button>
+  
     </div>
   );
 };
