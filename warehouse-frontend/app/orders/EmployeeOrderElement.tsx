@@ -15,11 +15,13 @@ import OrderJobsRender from '../components/OrderJobsRender';
 
 interface Job {
   jobs_id: string;
+  description: string;
   // Add other fields as needed
 }
 
 interface OrderJob {
   workshopOrderId: string;
+  description: string;
   jobs: Job[];
 }
 
@@ -62,7 +64,7 @@ const [orderJobStrings, setOrderJobStrings] = useState<string[]>([
     loadOrderJobs();
   };
 
-const convertOrderJobsToStrings = (orderJobs: OrderJob[]): string[] => {
+const convertOrderJobsToStrings = (orderJobs: OrderJob[], workshoporders: { id: string, description: string }[], jobs: { id: string, description: string }[]): string[] => {
   const strings: string[] = [];
 
   for (let i = 0; i < orderJobs.length; i++) {
@@ -70,7 +72,9 @@ const convertOrderJobsToStrings = (orderJobs: OrderJob[]): string[] => {
 
     for (let j = 0; j < orderJob.jobs.length; j++) {
       const job = orderJob.jobs[j];
-      strings.push(`Order id: ${orderJob.workshopOrderId} | Job id: ${job.jobs_id}`);
+      const workshopOrder = workshoporders.find((order) => order.id === orderJob.workshopOrderId);
+      const jobOrder = jobs.find((x) => x.id === job.jobs_id);
+      strings.push(`Workshop description: ${workshopOrder?.description} | Job description: ${jobOrder?.description} | WorkshopOrder id: ${orderJob.workshopOrderId} | Job id: ${job.jobs_id}`);
     }
   }
 
@@ -393,7 +397,7 @@ const returnOrderJobsTab = () => {
       )}
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <OrderJobsRender
-        orderJobStrings={convertOrderJobsToStrings(orderJobs)}
+        orderJobStrings={convertOrderJobsToStrings(orderJobs, workshoporders, jobs)}
         deleteWorkshopOrderJobs={deleteOrderJobs}
       />
 

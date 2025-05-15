@@ -7,16 +7,14 @@ interface OrderJobsRenderProps {
 
 const OrderJobsRender: React.FC<OrderJobsRenderProps> = ({ orderJobStrings, deleteWorkshopOrderJobs }) => {
 
-  // Handle item selection for deletion
   const handleSelect = (item: string) => {
-    const regex = /Order id: ([a-f0-9\-]+) \| Job id: ([a-f0-9\-]+)/;
+
+    const regex = /Workshop description: ([^|]+) \| Job description: ([^|]+) \| WorkshopOrder id: ([a-f0-9\-]+) \| Job id: ([a-f0-9\-]+)/;
     const match = item.match(regex);
 
-    if (match && match[1] && match[2]) {
-      const workshopOrderId = match[1];
-      const jobId = match[2];
-
-      // Call delete function (replace with your actual delete logic)
+    if (match && match[3] && match[4]) {
+      const workshopOrderId = match[3]; 
+      const jobId = match[4]; 
       deleteWorkshopOrderJobs(workshopOrderId, jobId);
     }
   };
