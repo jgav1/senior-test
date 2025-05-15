@@ -1,6 +1,6 @@
 'use client'
 
-import {fetchWorkshopOrders, createWorkshopOrders, updateWorkshopOrders, deleteWorkshopOrders} from '@/lib/workshop_order/api'
+import {fetchWorkshopOrders, createWorkshopOrders, updateWorkshopOrders, deleteWorkshopOrders, fetchOrderJobs, createWorkshopOrdersJobs, deleteWorkshopOrderJobs} from '@/lib/workshop_order/api'
 import {fetchJobs, createJobs, updateJobs, deleteJobs} from '@/lib/jobs/api'
 import {fetchCustomerOrders, createCustomerOrders,deleteCustomerOrders,updateCustomerOrders} from '@/lib/customer_order/api'
 
@@ -8,18 +8,26 @@ import { useState, useEffect, use } from 'react';
 import HeaderWithActions from '../components/HeaderWithActions';
 import WorkshopOrderForm from '../components/WorkshopOrderForm';
 import JobForm from '../components/JobForm';
+import OrderJobsForm from '../components/OrderJobsForm';
 import ListWithDelete from '../components/ListWithDelete';
 
 
+interface Job {
+  jobs_id: string;
+  // Add other fields as needed
+}
 
-
-
-
+interface OrderJob {
+  workshopOrderId: string;
+  jobs: Job[];
+}
 
 export default function EmployeeOrderElement() {
 const [workshoporders, setworkshopOrders] = useState([])
 const [jobs, setJobs] = useState([])
-const [customerOrders, setCustomerOrders] = useState<any[]>([])  
+const [customerOrders, setCustomerOrders] = useState<any[]>([]) 
+const [orderJobs, setOrderJobs] = useState<OrderJob[]>([])
+const [skuJobs, setSkuJobs] = useState([]) 
 
 const [loading, setLoading] = useState(false)
 const [showForm, setShowForm] = useState(false)
@@ -29,6 +37,24 @@ const [tab, setTab] = useState<'workshop_orders' | 'jobs' | 'order_jobs' | 'sku_
 
 const [editingWorkshopOrder, setEditingWorkshopOrder] = useState<any | null>(null)
 const [editingJob, setEditingJob] = useState<any | null>(null)
+const [editingOrderJob, setEditingOrderJob] = useState<any | null>(null)
+const [editingSkuJob, setEditingSkuJob] = useState<any | null>(null)
+const [selectedItemOrderJobId, setSelectedItemOrderJobId] = useState<string | null>(null)
+
+const convertOrderJobsToStrings = (orderJobs: OrderJob[]): string[] => {
+  const strings: string[] = [];
+
+  for (let i = 0; i < orderJobs.length; i++) {
+    const orderJob = orderJobs[i];
+
+    for (let j = 0; j < orderJob.jobs.length; j++) {
+      const job = orderJob.jobs[j];
+      strings.push(`Order id: ${orderJob.workshopOrderId} | Job id: ${job.jobs_id}`);
+    }
+  }
+
+  return strings;
+};
 
 const loadCustomerOrders = async () => {
   try {
@@ -56,11 +82,21 @@ const loadCustomerOrders = async () => {
       console.error(err)
     }
   }
+  const loadOrderJobs = async () => {
+    try {
+      const data = await fetchOrderJobs()
+      setOrderJobs(data)
+      console.log('Order Jobs:', data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   useEffect(() => {
     loadCustomerOrders()
     loadWorkshopOrders()
     loadJobs()
+    loadOrderJobs()
   }, [])
 
   const handleWorkshopOrderSubmit = async (data: { customer_order_id: string, description: string, max_days: string, state: string, total_fixed_cost: string, total_profit: string, total_variable_cost: string }) => {
@@ -112,6 +148,29 @@ const handleJobSubmit = async (
   }
 };
 
+const handleOrderJobSubmit = async (workshop_order_id: string, job_id: string) => {
+  setLoading(true);
+  setErrorMessage(null);
+  try {
+    const data = { workshop_order_id, job_id };
+    if (editingOrderJob) {
+      //await updateWorkshopOrdersJobs(workshop_order_id, job_id);
+      setEditingOrderJob(null);
+    } else {
+      await createWorkshopOrdersJobs(data);
+    }
+    loadWorkshopOrders();
+    loadJobs();
+    loadOrderJobs();
+    setShowForm(false);
+  } catch (err) {
+    console.error(err);
+    setErrorMessage('Failed to save order job');
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   const handleDeleteWorkshopOrder = async (workshop_order_id: string) => {
     if(!editingWorkshopOrder){
@@ -147,6 +206,22 @@ const handleJobSubmit = async (
   }
   }
 
+  const handleDeleteOrderJob = async (workshop_order_id: string, job_id: string) => {
+    if(!editingOrderJob){
+          setLoading(true)
+    try {
+      await deleteWorkshopOrderJobs(workshop_order_id, job_id)
+      loadOrderJobs()
+    } catch (err) {
+      console.error(err)
+      setErrorMessage('Failed to delete order job')
+    } finally {
+      setLoading(false)
+      setDeleteMode(false)
+    }
+
+  }
+  }
   const handleCreateClick = () => setShowForm(true)
   const handleCancelClick = () => {
     setShowForm(false)
@@ -189,6 +264,19 @@ const renderJobs = (jobs: any) => {
           Delete
         </button>
       )}
+    </div>
+  );
+};
+
+const renderOrderJobs = (orderJob: OrderJob) => {
+  return (
+    <div>
+      <h2 className="text-lg font-bold">Workshop Order Id: {orderJob.workshopOrderId}</h2>
+      {orderJob.jobs.map((job) => (
+        <div key={job.id}>
+          <span>| Job Id: {job.id}</span>
+        </div>
+      ))}
     </div>
   );
 };
@@ -257,6 +345,52 @@ const returnJobsTab = () => {
   );
 };
 
+const returnOrderJobsTab = () => {  
+  const orderJobStrings = convertOrderJobsToStrings(orderJobs);
+    const handleSelect = (itemId: string) => {
+    if (deleteMode) {
+      setSelectedItemOrderJobId(itemId);
+    }
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-2xl shadow">
+      <HeaderWithActions
+        title="Order Jobs"
+        onCreateClick={handleCreateClick}
+        onCancelClick={handleCancelClick}
+        deleteMode={deleteMode}
+        onDeleteModeToggle={handleDeleteModeToggle}
+        createButtonLabel="Create Order Job"
+        deleteButtonLabel="Delete Order Job"
+      />
+      {showForm && (
+        <OrderJobsForm
+          onSubmit={handleOrderJobSubmit}
+          loading={loading}
+          onCancel={handleCancelClick}
+        />
+      )}
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {/*<OrderJobRenderList orderJobs={orderJobs} onDeleteItem={handleDeleteOrderJob} />*/}
+      
+      <div>
+      <h2>Order Jobs List</h2>
+      <ul>
+        {orderJobStrings.map((item, index) => (
+          <li key={index}>{item}</li>
+
+          
+          
+        )
+        )}
+      </ul>
+    </div>
+
+    </div>
+  );
+}
+
 
 
   return (
@@ -266,7 +400,7 @@ const returnJobsTab = () => {
         <button onClick={() => setTab('workshop_orders')} className={`${tab === 'workshop_orders' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Workshop Orders</button>
         <button onClick={() => setTab('jobs')} className={`${tab === 'jobs' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Jobs</button>
         <button onClick={() => setTab('order_jobs')} className={`${tab === 'order_jobs' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>Order Jobs</button>
-        <button onClick={() => setTab('sku_jobs')} className={`${tab === 'sku_jobs' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>SKU Jobs</button>
+        {/*<button onClick={() => setTab('sku_jobs')} className={`${tab === 'sku_jobs' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'} pb-1 font-semibold`}>SKU Jobs</button>*/}
       </div>
 
       {/* Workshop Orders Tab */}
@@ -282,6 +416,15 @@ const returnJobsTab = () => {
           {returnJobsTab()}
         </div>
       )}
+
+      {/* Order Jobs Tab */}
+      {tab === 'order_jobs' && (
+        <div className="bg-white p-6 rounded-2xl shadow">
+          {returnOrderJobsTab()}
+        </div>
+      )}
+
+      {/* SKU Jobs Tab */}
 
     </div>
   )
