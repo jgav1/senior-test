@@ -78,7 +78,7 @@ async def get_order_state_counts():
     except Exception as e:
         return {"error": str(e)}
     
-@router.get("/optimized/next_order3")
+@router.get("/optimized/next_order")
 async def get_optimized_next_order():
     try:
         optimized_order = await get_optimized_order()

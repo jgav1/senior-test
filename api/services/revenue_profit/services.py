@@ -157,8 +157,8 @@ async def calculate_optimized_order_by_expected_profit(use_state_check: bool = F
             for order in orders_data:
                 order_id = order['id']  
                 
-                
-                order_profit = await calculate_profit(order_id, use_state_check)
+                if(order['state'] != "completed"):
+                    order_profit = await calculate_profit(order_id, use_state_check)
 
                 
                 if order_profit > max_profit:
