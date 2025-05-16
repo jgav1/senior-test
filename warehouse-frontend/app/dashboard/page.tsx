@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import RevenueCosts from '../components/RevenueCosts';
 import { fetchTotalProfit, fetchOptimizedOrder } from '@/lib/services/api';
+import {updateWorkshopOrders} from '@/lib/workshop_order/api';
 import OptimizedOrderRender from '../components/OptimizedOrderRender';
 
 
@@ -15,28 +16,39 @@ export default function Dashboard() {
     expectedProfit: 0,
   });
 
-  useEffect(() => {
-    const getProfit = async () => {
-      const profit= await fetchTotalProfit();
-      settotalProfit(profit.total_profit);
-    };
-    getProfit();
-  }, []);
+
+  const getProfit = async () => {
+    const profit= await fetchTotalProfit();
+    settotalProfit(profit.total_profit);
+  };
+
+  const getOptimizedOrder = async () => {
+    const order = await fetchOptimizedOrder();
+    setOptimizedOrder(order);
+  };
 
   useEffect(() => {
-    const getOptimizedOrder = async () => {
-      const order = await fetchOptimizedOrder();
-      setOptimizedOrder(order);
-    };
+    getProfit();
     getOptimizedOrder();
-  }, []);
+  }, []); 
+
+
+    const handleComplete = async (workshop_order_id: string) => {
+    try {
+      const details = await updateWorkshopOrders(workshop_order_id,{state: 'completed'});  // Make sure this function exists
+      getProfit();
+      getOptimizedOrder();
+    } catch (error) {
+      console.error('Error completing workshop order:', error);
+    }
+  };
 
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div className="bg-white p-6 rounded-2xl shadow">
         <h2 className="text-sm text-gray-500">Next Order Optimized</h2>
-        <OptimizedOrderRender optimized_next_order={optimizedOrder} />
+        <OptimizedOrderRender optimized_next_order={optimizedOrder} onComplete={handleComplete} />
       </div>
       <RevenueCosts total_profit={totalProfit} totalCosts={-100} />
       
