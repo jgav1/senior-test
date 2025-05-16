@@ -1,3 +1,46 @@
+
+#################################
+To check the documentation and all the logic rationale: open AutoPartsPro Full Rationale.pdf
+
+Moreover to see details of the implementation of the DB, check: senior-test\Documentation\DB
+
+Finally instructions to run the app: 
+
+execute from within the senior-test folder the following comand:
+first go to the base folder which is 
+\senior-test
+
+Then open docker desktop. 
+
+Then execute this command from the terminal:
+docker compose up --build
+
+After that, go the folder
+\senior-test\warehouse-frontend
+then execute the following:
+npm i 
+then execute the following:
+npm run dev
+
+With that the services must be running correctly. 
+
+To access them you need to: 
+
+Then to enter the services running:
+Frontend:
+- enter to localhost:3000 to enter the AutoPartsPro webpage
+Api:
+- enter to localhost:8000 to enter the API's documentation webpage
+DB admin tools:
+- enter to localhost:5050 to enter pgadmin. 
+
+Check the explanation of the functionality here (in spanish):
+https://www.youtube.com/watch?v=500o9DjHwAE 
+
+How to run everything
+
+###############################
+
 # senior-test
 # AutoPartsPro Technical Test
 
