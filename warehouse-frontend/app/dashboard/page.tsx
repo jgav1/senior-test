@@ -1,20 +1,45 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import RevenueCosts from '../components/RevenueCosts';
+import { fetchTotalProfit, fetchOptimizedOrder } from '@/lib/services/api';
+import OptimizedOrderRender from '../components/OptimizedOrderRender';
+
+
 export default function Dashboard() {
+  const [totalProfit, settotalProfit] = useState(0);
+  const [optimizedOrder, setOptimizedOrder] = useState({
+    customerName: '',
+    id: '',
+    description: '',
+    expectedProfit: 0,
+  });
+
+  useEffect(() => {
+    const getProfit = async () => {
+      const profit= await fetchTotalProfit();
+      settotalProfit(profit.total_profit);
+    };
+    getProfit();
+  }, []);
+
+  useEffect(() => {
+    const getOptimizedOrder = async () => {
+      const order = await fetchOptimizedOrder();
+      setOptimizedOrder(order);
+    };
+    getOptimizedOrder();
+  }, []);
+
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div className="bg-white p-6 rounded-2xl shadow">
         <h2 className="text-sm text-gray-500">Next Order Optimized</h2>
-        <p className="text-xl font-bold">Lucas Automotive</p>
+        <OptimizedOrderRender optimized_next_order={optimizedOrder} />
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow">
-        <div>
-          <h2 className="text-sm text-gray-500">Revenue as of today</h2>
-          <p className="text-2xl font-bold text-green-600">$1,200</p>
-        </div>
-        <div>
-          <h2 className="text-sm text-gray-500">Estimated cost per day</h2>
-          <p className="text-2xl font-bold text-red-600">$40</p>
-        </div>
-      </div>
+      <RevenueCosts total_profit={totalProfit} totalCosts={-100} />
+      
 
       <div className="bg-white p-6 rounded-2xl shadow">
         <h2 className="text-sm text-gray-500">Total Inventory</h2>
