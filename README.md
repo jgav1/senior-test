@@ -1,6 +1,8 @@
 
 #################################
 #Getting Started
+#################################
+
 To check the documentation and all the logic rationale: open AutoPartsPro Full Rationale.pdf
 
 Moreover to see details of the implementation of the DB, check: senior-test\Documentation\DB
