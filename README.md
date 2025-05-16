@@ -37,8 +37,8 @@ Api:
 DB admin tools:
 - enter to localhost:5050 to enter pgadmin. 
 
-Check the explanation of the functionality here (in spanish):
-https://www.youtube.com/watch?v=500o9DjHwAE 
+
+
 
 How to run everything
 
