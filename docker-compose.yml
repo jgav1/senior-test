@@ -1,6 +1,18 @@
 version: '3.9'
 
 services:
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      - POSTGRES_DB=autopartspro
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - shared-db-net
+
   api:
     build: 
       context: .
@@ -8,9 +20,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cleanfastapi
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/autopartspro
     volumes:
       - ./api:/app/api
+    depends_on:
+      - db
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
       - shared-db-net
