@@ -265,9 +265,6 @@ const renderWorkshopOrders = (workshop: any) => {
       <span>| Description: {workshop.description}</span>
       <span>| Max Days to complete: {workshop.max_days}</span>
       <span>| State: {workshop.state}</span>
-      <span>| Total Fixed Cost: {workshop.total_fixed_cost}</span>
-      <span>| Total Profit: {workshop.total_profit}</span>
-      <span>| Total Variable Cost: {workshop.total_variable_cost}</span>
       {!editingWorkshopOrder && (
         <button onClick={() => handleDeleteWorkshopOrder(workshop.id)} className="text-red-500 ml-2">
           Delete
