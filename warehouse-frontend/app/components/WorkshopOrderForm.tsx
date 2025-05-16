@@ -42,9 +42,9 @@ const WorkshopOrderForm: React.FC<WorkshopOrderFormProps> = ({
   const [description, setDescription] = useState('Maintainance');
   const [maxDays, setMaxDays] = useState('10');
   const [state, setState] = useState('created');
-  const [totalFixedCost, setTotalFixedCost] = useState('75');
-  const [totalProfit, setTotalProfit] = useState('100');
-  const [totalVariableCost, setTotalVariableCost] = useState('5');
+  const [totalFixedCost, setTotalFixedCost] = useState('0');
+  const [totalProfit, setTotalProfit] = useState('0');
+  const [totalVariableCost, setTotalVariableCost] = useState('0');
 
 
   const handleCustomerOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -164,50 +164,7 @@ const WorkshopOrderForm: React.FC<WorkshopOrderFormProps> = ({
         </select>
       </div>
 
-      <div>
-        <label htmlFor="total_fixed_cost" className="block text-sm font-medium text-gray-700">
-          Total Fixed Cost
-        </label>
-        <input
-          type="number"
-          id="total_fixed_cost"
-          name="total_fixed_cost"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          value={totalFixedCost}
-          onChange={handleTotalFixedCostChange}
-          placeholder="75"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="total_profit" className="block text-sm font-medium text-gray-700">
-          Total Profit
-        </label>
-        <input
-          type="number"
-          id="total_profit"
-          name="total_profit"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          value={totalProfit}
-          onChange={handleTotalProfitChange}
-            placeholder="100"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="total_variable_cost" className="block text-sm font-medium text-gray-700">
-          Total Variable Cost per day
-        </label>
-        <input
-          type="number"
-          id="total_variable_cost"
-          name="total_variable_cost"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          value={totalVariableCost}
-          onChange={handleTotalVariableCostChange}
-          placeholder="5"
-        />
-      </div>
+ 
 
       <div>
       <button
