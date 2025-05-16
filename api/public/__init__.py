@@ -10,7 +10,8 @@ from api.public.inventory import api as inventory
 from api.public.workshop_orders import api as workshop_orders
 from api.public.jobs import api as jobs
 from api.public.profit_loss import api as profit_loss
-#from api.public.vehicle_parts_catalog import api as vehicle_parts_catalog
+from api.services import api as services
+
 
 api = APIRouter()
 
@@ -62,13 +63,14 @@ api.include_router(
     tags=["Customer Orders"],
     #dependencies=[Depends(authent)],
 )
-
+"""
 api.include_router(
     inventory.router,
     prefix="/inventory",
     tags=["Inventory"],
     #dependencies=[Depends(authent)],
 )
+"""
 
 api.include_router(
     workshop_orders.router,
@@ -90,19 +92,12 @@ api.include_router(
     #dependencies=[Depends(authent)],
 )
 
-
-
-
-
-""" 
 api.include_router(
-    vehicle_parts_catalog.router,
-    prefix="/vehicle_parts_catalog",
-    tags=["Vehicle Parts Catalog"],
+    services.router,
+    prefix="/services",
+    tags=["Services"],
     #dependencies=[Depends(authent)],
 )
-
-"""
 
 
 
