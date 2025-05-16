@@ -127,7 +127,7 @@ ALTER TABLE "part_market_data" ADD FOREIGN KEY ("part_id") REFERENCES "parts" ("
 
 ALTER TABLE "vehicle_parts_catalog" ADD FOREIGN KEY ("vehicle_type_id") REFERENCES "vehicle_types" ("id");
 
-ALTER TABLE "vehicle_parts_catalog" ADD FOREIGN KEY ("part_id") REFERENCES "parts" ("id");
+ALTER TABLE "vehicle_parts_catalog" ADD FOREIGN KEY ("part_id") REFERENCES "skus" ("id");
 
 ALTER TABLE "customer_orders" ADD FOREIGN KEY ("customer_id") REFERENCES "customers" ("id");
 
@@ -141,6 +141,6 @@ ALTER TABLE "order_jobs" ADD FOREIGN KEY ("job_id") REFERENCES "jobs" ("id");
 
 ALTER TABLE "job_parts" ADD FOREIGN KEY ("job_id") REFERENCES "jobs" ("id");
 
-ALTER TABLE "job_parts" ADD FOREIGN KEY ("sku_id") REFERENCES "parts" ("id");
+ALTER TABLE "job_parts" ADD FOREIGN KEY ("sku_id") REFERENCES "skus" ("id");
 
 ALTER TABLE "profit_loss" ADD FOREIGN KEY ("order_id") REFERENCES "workshop_orders" ("id");
